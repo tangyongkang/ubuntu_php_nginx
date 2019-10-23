@@ -165,6 +165,7 @@ COPY ./supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 
 # 安装composer
+
 #RUN curl -sS https://getcomposer.org/installer | /usr/local/php/bin/php \
 #    && mv composer.phar /usr/local/bin/composer \
 #    && ln -s /usr/local/php/bin/php /usr/local/bin/php \
