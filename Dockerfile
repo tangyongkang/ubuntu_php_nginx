@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM ubuntu:16.04
 
 
 # 设置基本环境变量
@@ -164,6 +164,8 @@ COPY ./supervisor/php-fpm_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 
+# 添加用户，分组
+RUN useradd nginx
 
 # 创建php执行路径文件夹
 RUN mkdir -p /www/wwwroot/html/

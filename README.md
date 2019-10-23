@@ -1,6 +1,6 @@
 #ANPSC Docker - 快速构建ANPSC容器环境
 
-快速构建开发、测试、生产Docker + Alpine + PHP7 + Nginx + Composer + Supervisor + Crontab + Laravel 的Docker 容器应用环境
+快速构建开发、测试、生产 Ubuntu + Nginx + Php + Redis + Supervisor 的Docker 容器应用环境
 
 
 移除旧的版本：
@@ -57,20 +57,9 @@ php 源码版本下载地址
     http://ftp.ntu.edu.tw/php/distributions/php-5.6.0.tar.gz
 
 
-
-
-
-镜像加速       
-
-   由于众所周知的原因，docker国外源速度不快，所以这边我们使用ali的源，当然你可以选择其它的源。
-   ali的源需要先去https://cr.console.aliyun.com/注册，会得到一个加速的个人连接，注册相关请自行百度。
-   
-   vim /etc/docker/daemon.json：
-   {
-     "registry-mirrors": ["https://yt3uvnue.mirror.aliyuncs.com"]
-   }
-   //重启使配置生效
-   systemctl restart docker
+镜像加速  
+     
+      systemctl restart docker
 
 ##主要特性
 
