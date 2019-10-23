@@ -2,7 +2,9 @@ FROM ubuntu:16.04
 
 
 # 设置基本环境变量
+ENV NGINX_VERSION          1.14.0
 ENV PHP_VERSION            5.6.0
+ENV REDIS_VERSION          4.0.9
 
 #  修改ubuntu的源为阿里源
 RUN  cp etc/apt/sources.list  /etc/apt/sources.list.bak
@@ -22,9 +24,9 @@ RUN  apt-get install -y --fix-missing  pkg-config libmcrypt-dev libxml2-dev buil
 RUN mkdir test
 
 # 复制相关下载好的文件包进去
-COPY ./nginx/nginx-1.14.0.tar.gz /test/
+COPY ./nginx/nginx-${NGINX_VERSION}.tar.gz /test/
 COPY ./php/php-${PHP_VERSION}.tar.gz /test/
-COPY ./redis/redis-4.0.9.tar.gz /test/
+COPY ./redis/redis-${REDIS_VERSION}.tar.gz /test/
 COPY ./wkhtmltopdf/wkhtmltox_0.12.5-1.trusty_amd64.deb /test
 
 COPY ./extension/redis-2.2.8.tgz /test/
@@ -34,13 +36,13 @@ COPY ./extension/zend-loader-php5.5-linux-x86_64.tar.gz /test/
 
 
 # 安装nginx
-RUN tar -zxvf /test/nginx-1.14.0.tar.gz -C /test \
-    && rm -r /test/nginx-1.14.0.tar.gz \
-    && cd  /test/nginx-1.14.0 \
+RUN tar -zxvf /test/nginx-${NGINX_VERSION}.tar.gz -C /test \
+    && rm -r /test/nginx-${NGINX_VERSION}.tar.gz \
+    && cd  /test/nginx-${NGINX_VERSION} \
     && ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-stream --with-mail=dynamic\
     && make && make install \
     && cd /  \
-    && rm -rf /test/nginx-1.14.0 \
+    && rm -rf /test/nginx-${NGINX_VERSION} \
     && rm /usr/local/nginx/conf/nginx.conf
 
 # 复制nginx.conf 配置进去
@@ -97,12 +99,12 @@ COPY ./php/php.ini  /usr/local/php/etc/
 COPY ./php/php-fpm.conf  /usr/local/php/etc/
 
 # 安装redis
-RUN tar -zxvf /test/redis-4.0.9.tar.gz -C /test \
-    && rm -r /test/redis-4.0.9.tar.gz \
-    && cd  /test/redis-4.0.9 \
+RUN tar -zxvf /test/redis-${REDIS_VERSION}.tar.gz -C /test \
+    && rm -r /test/redis-${REDIS_VERSION}.tar.gz \
+    && cd  /test/redis-${REDIS_VERSION} \
     && make && make install \
     && cd /  \
-    && rm -rf /test/redis-4.0.9
+    && rm -rf /test/redis-${REDIS_VERSION}
 
 # 复制设置redis.conf 配置
 RUN mkdir -p /etc/redis/

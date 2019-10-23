@@ -48,6 +48,14 @@
     docker run hello-world
 
 
+nginx 文件格式修改
+    
+    dos2unix entrypoint.sh
+    
+php 源码版本下载地址
+   
+    http://ftp.ntu.edu.tw/php/distributions/php-5.6.0.tar.gz
+
 
 
 
