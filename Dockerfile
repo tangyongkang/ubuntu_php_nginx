@@ -1,5 +1,9 @@
 FROM ubuntu:16.04
 
+
+# 设置基本环境变量
+ENV PHP_VERSION            5.6.0
+
 #  修改ubuntu的源为阿里源
 RUN  cp etc/apt/sources.list  /etc/apt/sources.list.bak
 COPY ./sources.list /etc/apt/sources.list
@@ -19,7 +23,7 @@ RUN mkdir test
 
 # 复制相关下载好的文件包进去
 COPY ./nginx/nginx-1.14.0.tar.gz /test/
-COPY ./php/php-5.5.7.tar.gz /test/
+COPY ./php/php-${PHP_VERSION}.tar.gz /test/
 COPY ./redis/redis-4.0.9.tar.gz /test/
 COPY ./wkhtmltopdf/wkhtmltox_0.12.5-1.trusty_amd64.deb /test
 
@@ -46,9 +50,9 @@ COPY ./nginx/conf.d/default.conf   /usr/local/nginx/conf/conf.d/
 
 
 # 安装php
-RUN tar -zxvf /test/php-5.5.7.tar.gz  -C /test \
-    && rm -r /test/php-5.5.7.tar.gz \
-    && cd  /test/php-5.5.7 \
+RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
+    && rm -r /test/php-${PHP_VERSION}.tar.gz \
+    && cd  /test/php-${PHP_VERSION} \
     && ./configure --prefix=/usr/local/php \
                    --with-config-file-path=/usr/local/php/etc \
                    --with-mysql=mysqlnd \
@@ -70,6 +74,7 @@ RUN tar -zxvf /test/php-5.5.7.tar.gz  -C /test \
                    --enable-ftp \
                    --with-openssl \
                    --enable-bcmath \
+                   --enable-sockets \
                    --enable-soap \
                    --with-libxml-dir \
                    --enable-mbstring \
@@ -84,7 +89,7 @@ RUN tar -zxvf /test/php-5.5.7.tar.gz  -C /test \
     && make \
     && make install \
     && cd /  \
-    && rm -rf /test/php-5.5.7
+    && rm -rf /test/php-${PHP_VERSION}
 
 
 # 复制相关配置
