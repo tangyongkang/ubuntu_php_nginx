@@ -32,7 +32,7 @@ COPY ./wkhtmltopdf/wkhtmltox_0.12.5-1.trusty_amd64.deb /test
 COPY ./extension/redis-2.2.8.tgz /test/
 COPY ./extension/memcache-3.0.6.tgz /test/
 COPY ./extension/php-wkhtmltox-master.zip /test/
-COPY ./extension/zend-loader-php5.5-linux-x86_64.tar.gz /test/
+# COPY ./extension/zend-loader-php5.5-linux-x86_64.tar.gz /test/
 
 
 # 安装nginx
@@ -163,6 +163,14 @@ RUN  apt-get install -y supervisor
 COPY ./supervisor/php-fpm_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
+
+# 安装composer
+
+#RUN curl -sS https://getcomposer.org/installer | /usr/local/php/bin/php \
+#    && mv composer.phar /usr/local/bin/composer \
+#    && ln -s /usr/local/php/bin/php /usr/local/bin/php \
+#    && composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
 
 # 添加用户，分组
 RUN useradd nginx
