@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:19.10
 
 
 # 设置基本环境变量
@@ -140,11 +140,11 @@ RUN tar -zxvf /test/memcache-3.0.6.tgz -C /test \
     && rm -rf /test/memcache-3.0.6
 
 # 安装  ZendGuardLoader扩展 zend-loader-php5.5-linux-x86_64.tar.gz
-RUN tar -zxvf /test/zend-loader-php5.5-linux-x86_64.tar.gz -C /test \
-    && rm -r /test/zend-loader-php5.5-linux-x86_64.tar.gz \
-    && cp /test/zend-loader-php5.5-linux-x86_64/ZendGuardLoader.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/ \
-    && cp /test/zend-loader-php5.5-linux-x86_64/opcache.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/ \
-    && rm -rf /test/zend-loader-php5.5-linux-x86_64
+#RUN tar -zxvf /test/zend-loader-php5.5-linux-x86_64.tar.gz -C /test \
+#    && rm -r /test/zend-loader-php5.5-linux-x86_64.tar.gz \
+#    && cp /test/zend-loader-php5.5-linux-x86_64/ZendGuardLoader.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/ \
+#    && cp /test/zend-loader-php5.5-linux-x86_64/opcache.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/ \
+#    && rm -rf /test/zend-loader-php5.5-linux-x86_64
 
 # 安装wkhtmltopdf扩展  php-wkhtmltox-master.zip
 RUN unzip /test/php-wkhtmltox-master.zip -d /test  \
