@@ -77,11 +77,11 @@ $ docker exec -it container_name sh
     docker build --no-cache -t anpsc:v1 .
     
 ## 启动镜像
-    docker run -d -p 8096:80 --name=lnmpv1 -v /www/wwwroot/PMS1:/usr/share/nginx/html/public anpsc:v1
+    docker run -d -p 8000:80  --name=lnmpv1  -v /www/wwwroot/dev_docker:/www/wwwroot/html/ anpsc:v1  anpscv1:5.6.0
  
     
 ## 进入镜像容器内
-    docker exec -it anpsc-v1 sh
+    docker exec -it lnmpv1 bash
 
         
 

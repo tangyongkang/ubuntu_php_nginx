@@ -49,6 +49,7 @@ RUN tar -zxvf /test/nginx-${NGINX_VERSION}.tar.gz -C /test \
 RUN mkdir -p /usr/local/nginx/conf/conf.d/
 COPY ./nginx/nginx.conf /usr/local/nginx/conf/
 COPY ./nginx/conf.d/default.conf   /usr/local/nginx/conf/conf.d/
+COPY ./nginx/conf.d/rewrite.conf   /usr/local/nginx/conf/conf.d/
 
 
 # 安装php
@@ -97,6 +98,8 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
 # 复制相关配置
 COPY ./php/php.ini  /usr/local/php/etc/
 COPY ./php/php-fpm.conf  /usr/local/php/etc/
+# 软连接处理
+RUN ln -s /usr/local/php/bin/php /usr/local/bin/php
 
 # 安装redis
 RUN tar -zxvf /test/redis-${REDIS_VERSION}.tar.gz -C /test \
@@ -165,7 +168,6 @@ COPY ./supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 
 # 安装composer
-
 #RUN curl -sS https://getcomposer.org/installer | /usr/local/php/bin/php \
 #    && mv composer.phar /usr/local/bin/composer \
 #    && ln -s /usr/local/php/bin/php /usr/local/bin/php \
@@ -178,7 +180,9 @@ RUN useradd nginx
 # 创建php执行路径文件夹
 RUN mkdir -p /www/wwwroot/html/
 #复制基本文件
-COPY ./php/index.php  /www/wwwroot/html/
+#COPY ./php/index.php  /www/wwwroot/html/
+# 项目目录挂载
+VOLUME ["/www/wwwroot/dev_docker/", "/www/wwwroot/html/"]
 
 WORKDIR /www/wwwroot/
 COPY ./entrypoint.sh /www/wwwroot/
