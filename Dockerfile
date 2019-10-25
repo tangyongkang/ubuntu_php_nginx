@@ -2,12 +2,18 @@ FROM ubuntu:16.04
 
 
 # 设置基本环境变量
-ENV NGINX_VERSION          1.14.0
-ENV PHP_VERSION            5.6.0
-ENV REDIS_VERSION          4.0.9
+ENV NGINX_VERSION                           1.14.0
+ENV PHP_VERSION                             5.6.0
+ENV REDIS_VERSION                           4.0.9
+
+# PHP 扩展安装
+ENV PHP_EXTENSION_ZEND_GUARD_LOADER         zend-loader-php5.6-linux-x86_64
+ENV PHP_EXTENSION_WKHTMLTOPDF               wkhtmltox_0.12.5-1.trusty_amd64
+ENV PHP_EXTENSION_REDIS                     2.2.8
+ENV PHP_EXTENSION_MEMCACHE                  3.0.6
 
 #  修改ubuntu的源为阿里源
-RUN  cp etc/apt/sources.list  /etc/apt/sources.list.bak
+RUN  rm -rf etc/apt/sources.list
 COPY ./sources.list /etc/apt/sources.list
 
 # 源文件修改后更新升级
@@ -18,7 +24,7 @@ RUN apt-get upgrade -y
 # 安装环境必须依赖
 RUN  apt-get -f -y install libxfont1 xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi fontconfig libxcb1 libxrender1 libxext6
 RUN  apt-get install -y --fix-missing autoconf unzip
-RUN  apt-get install -y --fix-missing  vim libtool-bin bison  zlib1g-dev libpcre3 libpcre3-dev libssl-dev libxslt1-dev  libgeoip-dev libgoogle-perftools-dev libperl-dev libtool gcc
+RUN  apt-get install -y --fix-missing  libtool-bin bison  zlib1g-dev libpcre3 libpcre3-dev libssl-dev libxslt1-dev  libgeoip-dev libgoogle-perftools-dev libperl-dev libtool gcc
 RUN  apt-get install -y --fix-missing  pkg-config libmcrypt-dev libxml2-dev build-essential openssl  libssl-dev make curl libcurl4-gnutls-dev libjpeg-dev  libpng-dev
 # 在里面创建一个文件夹
 RUN mkdir test
@@ -27,12 +33,12 @@ RUN mkdir test
 COPY ./nginx/nginx-${NGINX_VERSION}.tar.gz /test/
 COPY ./php/php-${PHP_VERSION}.tar.gz /test/
 COPY ./redis/redis-${REDIS_VERSION}.tar.gz /test/
-COPY ./wkhtmltopdf/wkhtmltox_0.12.5-1.trusty_amd64.deb /test
+COPY ./wkhtmltopdf/${PHP_EXTENSION_WKHTMLTOPDF}.deb /test
 
-COPY ./extension/redis-2.2.8.tgz /test/
-COPY ./extension/memcache-3.0.6.tgz /test/
+COPY ./extension/redis-${PHP_EXTENSION_REDIS}.tgz /test/
+COPY ./extension/memcache-${PHP_EXTENSION_MEMCACHE}.tgz /test/
 COPY ./extension/php-wkhtmltox-master.zip /test/
-# COPY ./extension/zend-loader-php5.5-linux-x86_64.tar.gz /test/
+COPY ./extension/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz /test/
 
 
 # 安装nginx
@@ -61,15 +67,15 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-mysql=mysqlnd \
                    --with-mysqli=mysqlnd \
                    --with-pdo-mysql=mysqlnd \
-                   --with-config-file-scan-dir=/usr/local/php/etc \
+                   --with-config-file-scan-dir=/usr/local/php/etc/php.d \
                    --enable-inline-optimization \
                    --disable-debug \
                    --disable-rpath \
                    --enable-shared \
                    --enable-opcache \
                    --enable-fpm \
-                   --with-fpm-user=www-data \
-                   --with-fpm-group=www-data \
+                   --with-fpm-user=nginx \
+                   --with-fpm-group=nginx \
                    --with-gettext \
                    --with-iconv \
                    --with-mcrypt \
@@ -115,39 +121,38 @@ COPY ./redis/redis.conf  /etc/redis/
 
 
 # 安装 wkhtmltopdf  wkhtmltox_0.12.5-1.trusty_amd64.deb
-RUN dpkg -i /test/wkhtmltox_0.12.5-1.trusty_amd64.deb \
-    && rm  /test/wkhtmltox_0.12.5-1.trusty_amd64.deb
+RUN dpkg -i /test/${PHP_EXTENSION_WKHTMLTOPDF}.deb \
+    && rm  /test/${PHP_EXTENSION_WKHTMLTOPDF}.deb
 # 安装字体
 RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-zenhei
 RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-microhei
 
 
 # 安装php-redis 扩展  redis-2.2.8.tgz
-RUN tar -zxvf /test/redis-2.2.8.tgz -C /test \
-    && rm -r /test/redis-2.2.8.tgz \
-    && cd  /test/redis-2.2.8 \
+RUN tar -zxvf /test/redis-${PHP_EXTENSION_REDIS}.tgz -C /test \
+    && rm -r /test/redis-${PHP_EXTENSION_REDIS}.tgz \
+    && cd  /test/redis-${PHP_EXTENSION_REDIS} \
     && /usr/local/php/bin/phpize \
     && ./configure --with-php-config=/usr/local/php/bin/php-config \
     && make && make install \
     && cd /  \
-    && rm -rf /test/redis-2.2.8
+    && rm -rf /test/redis-${PHP_EXTENSION_REDIS}
 
 # 安装  php- memcache 扩展  memcache-3.0.6.tgz
-RUN tar -zxvf /test/memcache-3.0.6.tgz -C /test \
-    && rm -r /test/memcache-3.0.6.tgz \
-    && cd  /test/memcache-3.0.6 \
+RUN tar -zxvf /test/memcache-${PHP_EXTENSION_MEMCACHE}.tgz -C /test \
+    && rm -r /test/memcache-${PHP_EXTENSION_MEMCACHE}.tgz \
+    && cd  /test/memcache-${PHP_EXTENSION_MEMCACHE} \
     && /usr/local/php/bin/phpize \
     && ./configure --with-php-config=/usr/local/php/bin/php-config \
     && make && make install \
     && cd /  \
-    && rm -rf /test/memcache-3.0.6
+    && rm -rf /test/memcache-${PHP_EXTENSION_MEMCACHE}
 
 # 安装  ZendGuardLoader扩展 zend-loader-php5.5-linux-x86_64.tar.gz
-#RUN tar -zxvf /test/zend-loader-php5.5-linux-x86_64.tar.gz -C /test \
-#    && rm -r /test/zend-loader-php5.5-linux-x86_64.tar.gz \
-#    && cp /test/zend-loader-php5.5-linux-x86_64/ZendGuardLoader.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/ \
-#    && cp /test/zend-loader-php5.5-linux-x86_64/opcache.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/ \
-#    && rm -rf /test/zend-loader-php5.5-linux-x86_64
+RUN tar -zxvf /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz -C /test \
+    && rm -r /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz \
+    && cp /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}/ZendGuardLoader.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20131226/ \
+    && rm -rf /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}
 
 # 安装wkhtmltopdf扩展  php-wkhtmltox-master.zip
 RUN unzip /test/php-wkhtmltox-master.zip -d /test  \
@@ -174,15 +179,17 @@ COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 #    && composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
 
+# 卸载不必要的环境依赖
+# RUN apt-get -y autoremove make unzip
+
+
 # 添加用户，分组
 RUN useradd nginx
 
 # 创建php执行路径文件夹
 RUN mkdir -p /www/wwwroot/html/
 #复制基本文件
-#COPY ./php/index.php  /www/wwwroot/html/
-# 项目目录挂载
-VOLUME ["/www/wwwroot/dev_docker/", "/www/wwwroot/html/"]
+COPY ./php/index.php  /www/wwwroot/html/
 
 WORKDIR /www/wwwroot/
 COPY ./entrypoint.sh /www/wwwroot/
