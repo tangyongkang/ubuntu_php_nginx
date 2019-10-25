@@ -1,16 +1,20 @@
 FROM ubuntu:16.04
 
-
 # 设置基本环境变量
 ENV NGINX_VERSION                           1.14.0
 ENV PHP_VERSION                             5.6.0
 ENV REDIS_VERSION                           4.0.9
+ENV PHP_WKHTMLTOPDF                         wkhtmltox_0.12.5-1.trusty_amd64
 
 # PHP 扩展安装
 ENV PHP_EXTENSION_ZEND_GUARD_LOADER         zend-loader-php5.6-linux-x86_64
-ENV PHP_EXTENSION_WKHTMLTOPDF               wkhtmltox_0.12.5-1.trusty_amd64
 ENV PHP_EXTENSION_REDIS                     2.2.8
 ENV PHP_EXTENSION_MEMCACHE                  3.0.6
+ENV PHP_EXTENSION_WKHTMLTOPDF               php-wkhtmltox-master
+
+# 其它
+ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/
+
 
 #  修改ubuntu的源为阿里源
 RUN  rm -rf etc/apt/sources.list
@@ -33,11 +37,11 @@ RUN mkdir test
 COPY ./nginx/nginx-${NGINX_VERSION}.tar.gz /test/
 COPY ./php/php-${PHP_VERSION}.tar.gz /test/
 COPY ./redis/redis-${REDIS_VERSION}.tar.gz /test/
-COPY ./wkhtmltopdf/${PHP_EXTENSION_WKHTMLTOPDF}.deb /test
+COPY ./wkhtmltopdf/${PHP_WKHTMLTOPDF}.deb /test
 
 COPY ./extension/redis-${PHP_EXTENSION_REDIS}.tgz /test/
 COPY ./extension/memcache-${PHP_EXTENSION_MEMCACHE}.tgz /test/
-COPY ./extension/php-wkhtmltox-master.zip /test/
+COPY ./extension/${PHP_EXTENSION_WKHTMLTOPDF}.zip /test/
 COPY ./extension/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz /test/
 
 
@@ -68,6 +72,7 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-mysqli=mysqlnd \
                    --with-pdo-mysql=mysqlnd \
                    --with-config-file-scan-dir=/usr/local/php/etc/php.d \
+                   --with-extension-dir= ${PHP_INI_EXTENSION_PATH} \
                    --enable-inline-optimization \
                    --disable-debug \
                    --disable-rpath \
@@ -107,6 +112,10 @@ COPY ./php/php-fpm.conf  /usr/local/php/etc/
 # 软连接处理
 RUN ln -s /usr/local/php/bin/php /usr/local/bin/php
 
+# 根据php环境不同  extension_dir 也不同
+RUN sed -i "s|extension_dir = .*|extension_dir =  "${PHP_INI_EXTENSION_PATH}"|i" /usr/local/php/etc/php.ini
+
+
 # 安装redis
 RUN tar -zxvf /test/redis-${REDIS_VERSION}.tar.gz -C /test \
     && rm -r /test/redis-${REDIS_VERSION}.tar.gz \
@@ -121,8 +130,8 @@ COPY ./redis/redis.conf  /etc/redis/
 
 
 # 安装 wkhtmltopdf  wkhtmltox_0.12.5-1.trusty_amd64.deb
-RUN dpkg -i /test/${PHP_EXTENSION_WKHTMLTOPDF}.deb \
-    && rm  /test/${PHP_EXTENSION_WKHTMLTOPDF}.deb
+RUN dpkg -i /test/${PHP_WKHTMLTOPDF}.deb \
+    && rm  /test/${PHP_WKHTMLTOPDF}.deb
 # 安装字体
 RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-zenhei
 RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-microhei
@@ -151,18 +160,18 @@ RUN tar -zxvf /test/memcache-${PHP_EXTENSION_MEMCACHE}.tgz -C /test \
 # 安装  ZendGuardLoader扩展 zend-loader-php5.5-linux-x86_64.tar.gz
 RUN tar -zxvf /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz -C /test \
     && rm -r /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz \
-    && cp /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}/ZendGuardLoader.so  /usr/local/php/lib/php/extensions/no-debug-non-zts-20131226/ \
+    && cp /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}/ZendGuardLoader.so  ${PHP_INI_EXTENSION_PATH} \
     && rm -rf /test/${PHP_EXTENSION_ZEND_GUARD_LOADER}
 
 # 安装wkhtmltopdf扩展  php-wkhtmltox-master.zip
-RUN unzip /test/php-wkhtmltox-master.zip -d /test  \
-    && rm -r /test/php-wkhtmltox-master.zip \
-    && cd /test/php-wkhtmltox-master \
+RUN unzip /test/${PHP_EXTENSION_WKHTMLTOPDF}.zip -d /test  \
+    && rm -r /test/${PHP_EXTENSION_WKHTMLTOPDF}.zip \
+    && cd /test/${PHP_EXTENSION_WKHTMLTOPDF} \
     && /usr/local/php/bin/phpize \
     && ./configure --with-php-config=/usr/local/php/bin/php-config \
     && make && make install \
     && cd /  \
-    && rm -rf /test/php-wkhtmltox-master
+    && rm -rf /test/${PHP_EXTENSION_WKHTMLTOPDF}
 
 # 守护进程  安装supervisor ,
 RUN  apt-get install -y supervisor
