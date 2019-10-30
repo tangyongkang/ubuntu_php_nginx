@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 # 设置基本环境变量
 ENV NGINX_VERSION                           1.14.0
-ENV PHP_VERSION                             5.5.7
+ENV PHP_VERSION                             7.1.0
 ENV REDIS_VERSION                           4.0.9
 ENV PHP_WKHTMLTOPDF                         wkhtmltox_0.12.5-1.trusty_amd64
 
@@ -11,10 +11,12 @@ ENV PHP_EXTENSION_ZEND_GUARD_LOADER         zend-loader-php5.5-linux-x86_64
 ENV PHP_EXTENSION_REDIS                     2.2.8
 ENV PHP_EXTENSION_MEMCACHE                  3.0.6
 ENV PHP_EXTENSION_WKHTMLTOPDF               php-wkhtmltox-master
+ENV PHP_EXTENSION_XLSWRITER                 php-ext-xlswriter-master
 
 # 其它  php-5.5.7   /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/
 # php-5.6.0   /usr/local/php/lib/php/extensions/no-debug-non-zts-20131226/
-ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/
+# php-7.1.0   /usr/local/php/lib/php/extensions/no-debug-non-zts-20160303/
+ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/no-debug-non-zts-20160303/
 
 
 #  修改ubuntu的源为阿里源
@@ -39,11 +41,13 @@ COPY ./nginx/nginx-${NGINX_VERSION}.tar.gz /test/
 COPY ./php/php-${PHP_VERSION}.tar.gz /test/
 COPY ./redis/redis-${REDIS_VERSION}.tar.gz /test/
 COPY ./wkhtmltopdf/${PHP_WKHTMLTOPDF}.deb /test
+COPY ./php/go-pear.phar  /test/
 
 COPY ./extension/redis-${PHP_EXTENSION_REDIS}.tgz /test/
 COPY ./extension/memcache-${PHP_EXTENSION_MEMCACHE}.tgz /test/
 COPY ./extension/${PHP_EXTENSION_WKHTMLTOPDF}.zip /test/
 COPY ./extension/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz /test/
+COPY ./extension/${PHP_EXTENSION_XLSWRITER}.zip /test/
 
 
 # 安装nginx
@@ -99,7 +103,8 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-gd \
                    --with-zlib \
                    --enable-zip \
-                   --with-pear \
+                   --without-pear \
+                   --disable-phar \
     && make \
     && make install \
     && cd /  \
@@ -111,6 +116,10 @@ COPY ./php/php.ini  /usr/local/php/etc/
 COPY ./php/php-fpm.conf  /usr/local/php/etc/
 # 软连接处理
 RUN ln -s /usr/local/php/bin/php /usr/local/bin/php
+
+# 处理 php-pear
+RUN /usr/local/php/bin/php /test/go-pear.phar \
+    && rm -rf /test/go-pear.phar
 
 # 根据php环境不同  extension_dir 也不同
 RUN sed -i "s|extension_dir =.*|extension_dir =  "${PHP_INI_EXTENSION_PATH}"|i" /usr/local/php/etc/php.ini
@@ -192,11 +201,12 @@ COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 #RUN apt-get -y autoremove libxfont1 xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi fontconfig libxcb1 libxrender1 libxext6 autoconf unzip
 #RUN apt-get -y autoremove libtool-bin bison  zlib1g-dev libpcre3 libpcre3-dev libssl-dev libxslt1-dev  libgeoip-dev libgoogle-perftools-dev libperl-dev libtool gcc
 #RUN apt-get -y autoremove pkg-config libmcrypt-dev libxml2-dev build-essential openssl  libssl-dev make curl libcurl4-gnutls-dev libjpeg-dev  libpng-dev
+RUN apt-get -y autoremove unzip
 
 # 修复环境依赖
-RUN apt-get update
-RUN apt-get -f install
-RUN apt-get upgrade -y
+#RUN apt-get update
+#RUN apt-get -f install
+#RUN apt-get upgrade -y
 
 
 
