@@ -141,9 +141,7 @@ COPY ./redis/redis.conf  /etc/redis/
 RUN dpkg -i /test/${PHP_WKHTMLTOPDF}.deb \
     && rm  /test/${PHP_WKHTMLTOPDF}.deb
 # 安装字体
-RUN apt-
-
-get install -y -f --force-yes  --no-install-recommends ttf-wqy-zenhei
+RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-zenhei
 RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-microhei
 
 
