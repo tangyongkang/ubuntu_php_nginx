@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 # 设置基本环境变量
 ENV NGINX_VERSION                           1.14.0
-ENV PHP_VERSION                             7.1.0
+ENV PHP_VERSION                             5.6.0
 ENV REDIS_VERSION                           4.0.9
 ENV PHP_WKHTMLTOPDF                         wkhtmltox_0.12.5-1.trusty_amd64
 
@@ -11,12 +11,12 @@ ENV PHP_EXTENSION_ZEND_GUARD_LOADER         zend-loader-php5.5-linux-x86_64
 ENV PHP_EXTENSION_REDIS                     2.2.8
 ENV PHP_EXTENSION_MEMCACHE                  3.0.6
 ENV PHP_EXTENSION_WKHTMLTOPDF               php-wkhtmltox-master
-ENV PHP_EXTENSION_XLSWRITER                 php-ext-xlswriter-master
+#ENV PHP_EXTENSION_XLSWRITER                 php-ext-xlswriter-master
 
 # 其它  php-5.5.7   /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/
 # php-5.6.0   /usr/local/php/lib/php/extensions/no-debug-non-zts-20131226/
 # php-7.1.0   /usr/local/php/lib/php/extensions/no-debug-non-zts-20160303/
-ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/no-debug-non-zts-20160303/
+ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/no-debug-non-zts-20131226/
 
 
 #  修改ubuntu的源为阿里源
@@ -41,13 +41,13 @@ COPY ./nginx/nginx-${NGINX_VERSION}.tar.gz /test/
 COPY ./php/php-${PHP_VERSION}.tar.gz /test/
 COPY ./redis/redis-${REDIS_VERSION}.tar.gz /test/
 COPY ./wkhtmltopdf/${PHP_WKHTMLTOPDF}.deb /test
-COPY ./php/go-pear.phar  /test/
+#COPY ./php/go-pear.phar  /test/
 
 COPY ./extension/redis-${PHP_EXTENSION_REDIS}.tgz /test/
 COPY ./extension/memcache-${PHP_EXTENSION_MEMCACHE}.tgz /test/
 COPY ./extension/${PHP_EXTENSION_WKHTMLTOPDF}.zip /test/
 COPY ./extension/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz /test/
-COPY ./extension/${PHP_EXTENSION_XLSWRITER}.zip /test/
+#COPY ./extension/${PHP_EXTENSION_XLSWRITER}.zip /test/
 
 
 # 安装nginx
@@ -90,9 +90,9 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-mcrypt \
                    --with-xmlrpc \
                    --enable-ftp \
+                   --enable-pcntl\
                    --with-openssl \
                    --enable-bcmath \
-                   --enable-sockets \
                    --enable-soap \
                    --with-libxml-dir \
                    --enable-mbstring \
@@ -103,8 +103,7 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-gd \
                    --with-zlib \
                    --enable-zip \
-                   --without-pear \
-                   --disable-phar \
+                   --with-pear \
     && make \
     && make install \
     && cd /  \
@@ -118,8 +117,8 @@ COPY ./php/php-fpm.conf  /usr/local/php/etc/
 RUN ln -s /usr/local/php/bin/php /usr/local/bin/php
 
 # 处理 php-pear
-RUN /usr/local/php/bin/php /test/go-pear.phar \
-    && rm -rf /test/go-pear.phar
+#RUN /usr/local/php/bin/php /test/go-pear.phar \
+#    && rm -rf /test/go-pear.phar
 
 # 根据php环境不同  extension_dir 也不同
 RUN sed -i "s|extension_dir =.*|extension_dir =  "${PHP_INI_EXTENSION_PATH}"|i" /usr/local/php/etc/php.ini
@@ -142,7 +141,9 @@ COPY ./redis/redis.conf  /etc/redis/
 RUN dpkg -i /test/${PHP_WKHTMLTOPDF}.deb \
     && rm  /test/${PHP_WKHTMLTOPDF}.deb
 # 安装字体
-RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-zenhei
+RUN apt-
+
+get install -y -f --force-yes  --no-install-recommends ttf-wqy-zenhei
 RUN apt-get install -y -f --force-yes  --no-install-recommends ttf-wqy-microhei
 
 
