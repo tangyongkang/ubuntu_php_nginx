@@ -74,7 +74,9 @@ $ docker exec -it container_name sh
 
 ## 构建镜像
     git clone https://github.com/tcyfree/anpsc.git
-    docker build --no-cache -t anpsc:v1 .
+    docker build --no-cache -t anpsc:55 -f ./Dockerfile55 .
+    docker build --no-cache -t anpsc:56 -f ./Dockerfile56 .
+    docker build --no-cache -t anpsc:72 -f ./Dockerfile72 .
     
 ## 启动镜像
     docker run -d -p 8000:80  --name=lnmpv1  -v /www/wwwroot/dev_docker:/www/wwwroot/html/ anpsc:v1  anpscv1:5.6.0

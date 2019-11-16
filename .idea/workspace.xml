@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a6e99ea-5acf-42df-8315-7e231bbdd447" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Dockerfile55" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile56" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/php/go-pear.phar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/php/php-7.1.0.tar.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/php7.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile72" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,17 +17,17 @@
     <session id="-1530911167">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="47" />
-          <entry key="project.open.time.0" value="42" />
-          <entry key="project.open.time.1" value="3" />
+          <entry key="project.closed" value="48" />
+          <entry key="project.open.time.0" value="43" />
+          <entry key="project.open.time.1" value="4" />
           <entry key="project.open.time.2" value="1" />
-          <entry key="project.opened" value="46" />
+          <entry key="project.opened" value="48" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="5-fpm" value="1" />
-          <entry key="Dockerfile" value="4" />
+          <entry key="Dockerfile" value="7" />
           <entry key="conf" value="18" />
           <entry key="ini" value="4" />
           <entry key="md" value="3" />
@@ -39,7 +38,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Dockerfile" value="4" />
+          <entry key="Dockerfile" value="7" />
           <entry key="Ini" value="4" />
           <entry key="Markdown" value="3" />
           <entry key="PLAIN_TEXT" value="3" />
@@ -49,7 +48,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Dockerfile" value="936" />
+          <entry key="Dockerfile" value="959" />
           <entry key="conf" value="97" />
           <entry key="ini" value="16" />
           <entry key="md" value="91" />
@@ -57,7 +56,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Dockerfile" value="936" />
+          <entry key="Dockerfile" value="959" />
           <entry key="Ini" value="16" />
           <entry key="Markdown" value="91" />
           <entry key="SmartyConfig" value="97" />
@@ -68,19 +67,33 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Dockerfile">
+        <entry file="file://$PROJECT_DIR$/Dockerfile55">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="144" selection-start-line="144" selection-end-line="144" />
+            <state relative-caret-position="570">
+              <caret line="158" column="10" lean-forward="true" selection-start-line="158" selection-start-column="10" selection-end-line="158" selection-end-column="10" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Dockerfile56">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="228">
+              <caret line="204" column="14" selection-start-line="204" selection-start-column="14" selection-end-line="204" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Dockerfile72">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/php/php.ini">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="37658">
-              <caret line="1982" column="13" selection-start-line="1982" selection-start-column="13" selection-end-line="1982" selection-end-column="13" />
+            <state relative-caret-position="181">
+              <caret line="1972" lean-forward="true" selection-start-line="1972" selection-end-line="1972" />
             </state>
           </provider>
         </entry>
@@ -98,8 +111,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="440">
-                <caret line="89" column="4" lean-forward="true" selection-start-line="89" selection-start-column="4" selection-end-line="89" selection-end-column="4" />
+              <first_editor relative-caret-position="384">
+                <caret line="90" column="40" lean-forward="true" selection-start-line="90" selection-start-column="40" selection-end-line="90" selection-end-column="40" />
               </first_editor>
               <second_editor />
             </state>
@@ -139,12 +152,14 @@
       <find>dev</find>
       <find>nginx</find>
       <find>PHP_EXTENSION_XLSWRITER</find>
+      <find>./</find>
     </findStrings>
     <replaceStrings>
       <replace>${PHP_EXTENSION_ZEND_GUARD_LOADER}</replace>
       <replace>${PHP_EXTENSION_REDIS}</replace>
       <replace>${PHP_EXTENSION_MEMCACHE}</replace>
       <replace>${PHP_EXTENSION_WKHTMLTOPDF}</replace>
+      <replace>../</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -160,6 +175,8 @@
         <option value="$PROJECT_DIR$/nginx/nginx.conf" />
         <option value="$PROJECT_DIR$/nginx/conf.d/default.conf" />
         <option value="$PROJECT_DIR$/php/php.ini" />
+        <option value="$PROJECT_DIR$/php55/Dockerfile" />
+        <option value="$PROJECT_DIR$/php56/Dockerfile" />
         <option value="$PROJECT_DIR$/Dockerfile" />
       </list>
     </option>
@@ -188,7 +205,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -200,6 +216,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -210,7 +227,13 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\php\code\ubuntu_php_nginx" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\php\code\ubuntu_php_nginx\php72" />
+      <recent name="E:\php\code\ubuntu_php_nginx\php56" />
+      <recent name="E:\php\code\ubuntu_php_nginx\php55" />
       <recent name="E:\php\code\ubuntu_php_nginx\php" />
       <recent name="E:\php\code\ubuntu_php_nginx\extension" />
     </key>
@@ -283,16 +306,19 @@
       <workItem from="1572429119680" duration="31000" />
       <workItem from="1573781040072" duration="109000" />
       <workItem from="1573794152220" duration="641000" />
+      <workItem from="1573876146417" duration="289000" />
+      <workItem from="1573894976391" duration="800000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37074000" />
+    <option name="totallyTimeSpent" value="38163000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15085287" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15405117" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -303,7 +329,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49946696" visible="true" weight="0.3206934" />
+      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49946696" visible="true" weight="0.31960997" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50053304" side_tool="true" weight="0.32394367" />
@@ -314,7 +340,7 @@
       <window_info anchor="right" id="Database" order="3" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14765458" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15245202" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -325,7 +351,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49946696" visible="true" weight="0.32142857" />
+      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49946696" visible="true" weight="0.32034633" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50053304" side_tool="true" weight="0.32394367" />
@@ -438,10 +464,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/php/php.ini">
+    <entry file="file://$PROJECT_DIR$/Dockerfile55">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="37658">
-          <caret line="1982" column="13" selection-start-line="1982" selection-start-column="13" selection-end-line="1982" selection-end-column="13" />
+        <state relative-caret-position="562">
+          <caret line="156" selection-start-line="156" selection-end-line="156" />
         </state>
       </provider>
     </entry>
@@ -452,20 +478,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Dockerfile72">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Dockerfile56">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="204" column="14" selection-start-line="204" selection-start-column="14" selection-end-line="204" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php/php.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="1972" lean-forward="true" selection-start-line="1972" selection-end-line="1972" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="440">
-            <caret line="89" column="4" lean-forward="true" selection-start-line="89" selection-start-column="4" selection-end-line="89" selection-end-column="4" />
+          <first_editor relative-caret-position="384">
+            <caret line="90" column="40" lean-forward="true" selection-start-line="90" selection-start-column="40" selection-end-line="90" selection-end-column="40" />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Dockerfile">
+    <entry file="file://$PROJECT_DIR$/Dockerfile55">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="144" selection-start-line="144" selection-end-line="144" />
+        <state relative-caret-position="570">
+          <caret line="158" column="10" lean-forward="true" selection-start-line="158" selection-start-column="10" selection-end-line="158" selection-end-column="10" />
         </state>
       </provider>
     </entry>
