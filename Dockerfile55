@@ -35,15 +35,15 @@ RUN  apt-get install -y --fix-missing  pkg-config libmcrypt-dev libxml2-dev buil
 RUN mkdir test
 
 # 复制相关下载好的文件包进去
-COPY ../nginx/nginx-${NGINX_VERSION}.tar.gz /test/
-COPY ../php/php-${PHP_VERSION}.tar.gz /test/
-COPY ../redis/redis-${REDIS_VERSION}.tar.gz /test/
-COPY ../wkhtmltopdf/${PHP_WKHTMLTOPDF}.deb /test
+COPY ./nginx/nginx-${NGINX_VERSION}.tar.gz /test/
+COPY ./php/php-${PHP_VERSION}.tar.gz /test/
+COPY ./redis/redis-${REDIS_VERSION}.tar.gz /test/
+COPY ./wkhtmltopdf/${PHP_WKHTMLTOPDF}.deb /test
 
-COPY ../extension/redis-${PHP_EXTENSION_REDIS}.tgz /test/
-COPY ../extension/memcache-${PHP_EXTENSION_MEMCACHE}.tgz /test/
-COPY ../extension/${PHP_EXTENSION_WKHTMLTOPDF}.zip /test/
-COPY ../extension/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz /test/
+COPY ./extension/redis-${PHP_EXTENSION_REDIS}.tgz /test/
+COPY ./extension/memcache-${PHP_EXTENSION_MEMCACHE}.tgz /test/
+COPY ./extension/${PHP_EXTENSION_WKHTMLTOPDF}.zip /test/
+COPY ./extension/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz /test/
 
 # 安装nginx
 RUN tar -zxvf /test/nginx-${NGINX_VERSION}.tar.gz -C /test \
