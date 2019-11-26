@@ -11,7 +11,6 @@ ENV PHP_EXTENSION_ZEND_GUARD_LOADER         zend-loader-php5.5-linux-x86_64
 ENV PHP_EXTENSION_REDIS                     2.2.8
 ENV PHP_EXTENSION_MEMCACHE                  3.0.6
 ENV PHP_EXTENSION_WKHTMLTOPDF               php-wkhtmltox-master
-#ENV PHP_EXTENSION_XLSWRITER                 php-ext-xlswriter-master
 
 # 其它  php-5.5.7   /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/
 ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/
@@ -19,7 +18,7 @@ ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/no
 
 #  修改ubuntu的源为阿里源
 RUN  rm -rf etc/apt/sources.list
-COPY sources.list /etc/apt/sources.list
+COPY ./sources.list /etc/apt/sources.list
 
 # 源文件修改后更新升级
 RUN apt-get update
@@ -45,6 +44,7 @@ COPY ./extension/memcache-${PHP_EXTENSION_MEMCACHE}.tgz /test/
 COPY ./extension/${PHP_EXTENSION_WKHTMLTOPDF}.zip /test/
 COPY ./extension/${PHP_EXTENSION_ZEND_GUARD_LOADER}.tar.gz /test/
 
+
 # 安装nginx
 RUN tar -zxvf /test/nginx-${NGINX_VERSION}.tar.gz -C /test \
     && rm -r /test/nginx-${NGINX_VERSION}.tar.gz \
@@ -57,9 +57,9 @@ RUN tar -zxvf /test/nginx-${NGINX_VERSION}.tar.gz -C /test \
 
 # 复制nginx.conf 配置进去
 RUN mkdir -p /usr/local/nginx/conf/conf.d/
-COPY nginx/nginx.conf /usr/local/nginx/conf/
-COPY nginx/conf.d/default.conf   /usr/local/nginx/conf/conf.d/
-COPY nginx/conf.d/rewrite.conf   /usr/local/nginx/conf/conf.d/
+COPY ./nginx/nginx.conf /usr/local/nginx/conf/
+COPY ./nginx/conf.d/default.conf   /usr/local/nginx/conf/conf.d/
+COPY ./nginx/conf.d/rewrite.conf   /usr/local/nginx/conf/conf.d/
 
 
 # 安装php
@@ -85,7 +85,6 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-mcrypt \
                    --with-xmlrpc \
                    --enable-ftp \
-                   --enable-pcntl\
                    --with-openssl \
                    --enable-bcmath \
                    --enable-soap \
@@ -101,19 +100,15 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-pear \
     && make \
     && make install \
-    && cd /  \
+    && cd / \
     && rm -rf /test/php-${PHP_VERSION}
 
 
 # 复制相关配置
-COPY php/php.ini  /usr/local/php/etc/
-COPY php/php-fpm.conf  /usr/local/php/etc/
+COPY ./php/php.ini  /usr/local/php/etc/
+COPY ./php/php-fpm.conf  /usr/local/php/etc/
 # 软连接处理
 RUN ln -s /usr/local/php/bin/php /usr/local/bin/php
-
-# 处理 php-pear
-#RUN /usr/local/php/bin/php /test/go-pear.phar \
-#    && rm -rf /test/go-pear.phar
 
 # 根据php环境不同  extension_dir 也不同
 RUN sed -i "s|extension_dir =.*|extension_dir =  "${PHP_INI_EXTENSION_PATH}"|i" /usr/local/php/etc/php.ini
@@ -129,7 +124,7 @@ RUN tar -zxvf /test/redis-${REDIS_VERSION}.tar.gz -C /test \
 
 # 复制设置redis.conf 配置
 RUN mkdir -p /etc/redis/
-COPY redis/redis.conf  /etc/redis/
+COPY ./redis/redis.conf  /etc/redis/
 
 
 # 安装 wkhtmltopdf  wkhtmltox_0.12.5-1.trusty_amd64.deb
@@ -180,10 +175,9 @@ RUN unzip /test/${PHP_EXTENSION_WKHTMLTOPDF}.zip -d /test  \
 RUN  apt-get install -y supervisor
 
 #复制相关配置文件
-COPY supervisor/php-fpm_supervisor.conf /etc/supervisor/conf.d/
-COPY supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
-COPY supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
-
+COPY ./supervisor/php-fpm_supervisor.conf /etc/supervisor/conf.d/
+COPY ./supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
+COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 
 # 卸载不必要的环境依赖
 #RUN apt-get -y autoremove libxfont1 xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi fontconfig libxcb1 libxrender1 libxext6 autoconf unzip
@@ -204,10 +198,10 @@ RUN useradd nginx
 # 创建php执行路径文件夹
 RUN mkdir -p /www/wwwroot/html/
 #复制基本文件
-COPY php/index.php  /www/wwwroot/html/
+COPY ./php/index.php  /www/wwwroot/html/
 
 WORKDIR /www/wwwroot/
-COPY entrypoint.sh /www/wwwroot/
+COPY ./entrypoint.sh /www/wwwroot/
 RUN chmod +x /www/wwwroot/entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]

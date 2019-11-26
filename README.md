@@ -79,7 +79,7 @@ $ docker exec -it container_name sh
     docker build --no-cache -t anpsc:72 -f ./Dockerfile72 .
     
 ## 启动镜像
-    docker run -d -p 8000:80  --name=lnmpv1  -v /www/wwwroot/dev_docker:/www/wwwroot/html/ anpsc:v1  anpscv1:5.6.0
+    docker run -d -p 8000:80  --name=lnmpv1  -v /www/wwwroot/dev_docker:/www/wwwroot/html/ anpsc:v1
  
     
 ## 进入镜像容器内

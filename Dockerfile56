@@ -7,20 +7,18 @@ ENV REDIS_VERSION                           4.0.9
 ENV PHP_WKHTMLTOPDF                         wkhtmltox_0.12.5-1.trusty_amd64
 
 # PHP 扩展安装
-ENV PHP_EXTENSION_ZEND_GUARD_LOADER         zend-loader-php5.5-linux-x86_64
+ENV PHP_EXTENSION_ZEND_GUARD_LOADER         zend-loader-php5.6-linux-x86_64
 ENV PHP_EXTENSION_REDIS                     2.2.8
 ENV PHP_EXTENSION_MEMCACHE                  3.0.6
 ENV PHP_EXTENSION_WKHTMLTOPDF               php-wkhtmltox-master
-#ENV PHP_EXTENSION_XLSWRITER                 php-ext-xlswriter-master
 
-# 其它
-# php-5.6.0   /usr/local/php/lib/php/extensions/no-debug-non-zts-20131226/
+# 其它  php-5.5.7   /usr/local/php/lib/php/extensions/no-debug-non-zts-20121212/
 ENV PHP_INI_EXTENSION_PATH                  /usr/local/php/lib/php/extensions/no-debug-non-zts-20131226/
 
 
 #  修改ubuntu的源为阿里源
 RUN  rm -rf etc/apt/sources.list
-COPY sources.list /etc/apt/sources.list
+COPY ./sources.list /etc/apt/sources.list
 
 # 源文件修改后更新升级
 RUN apt-get update
@@ -29,7 +27,7 @@ RUN apt-get upgrade -y
 
 # 安装环境必须依赖
 RUN  apt-get -f -y install libxfont1 xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi fontconfig libxcb1 libxrender1 libxext6
-RUN  apt-get install -y --fix-missing autoconf unzip
+RUN  apt-get install -y --fix-missing autoconf unzip wget
 RUN  apt-get install -y --fix-missing  libtool-bin bison  zlib1g-dev libpcre3 libpcre3-dev libssl-dev libxslt1-dev  libgeoip-dev libgoogle-perftools-dev libperl-dev libtool gcc
 RUN  apt-get install -y --fix-missing  pkg-config libmcrypt-dev libxml2-dev build-essential openssl  libssl-dev make curl libcurl4-gnutls-dev libjpeg-dev  libpng-dev
 # 在里面创建一个文件夹
@@ -59,9 +57,9 @@ RUN tar -zxvf /test/nginx-${NGINX_VERSION}.tar.gz -C /test \
 
 # 复制nginx.conf 配置进去
 RUN mkdir -p /usr/local/nginx/conf/conf.d/
-COPY nginx/nginx.conf /usr/local/nginx/conf/
-COPY nginx/conf.d/default.conf   /usr/local/nginx/conf/conf.d/
-COPY nginx/conf.d/rewrite.conf   /usr/local/nginx/conf/conf.d/
+COPY ./nginx/nginx.conf /usr/local/nginx/conf/
+COPY ./nginx/conf.d/default.conf   /usr/local/nginx/conf/conf.d/
+COPY ./nginx/conf.d/rewrite.conf   /usr/local/nginx/conf/conf.d/
 
 
 # 安装php
@@ -87,7 +85,6 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-mcrypt \
                    --with-xmlrpc \
                    --enable-ftp \
-                   --enable-pcntl\
                    --with-openssl \
                    --enable-bcmath \
                    --enable-soap \
@@ -100,16 +97,17 @@ RUN tar -zxvf /test/php-${PHP_VERSION}.tar.gz  -C /test \
                    --with-gd \
                    --with-zlib \
                    --enable-zip \
+                   --enable-pcntl \
                    --with-pear \
     && make \
     && make install \
-    && cd /  \
+    && cd / \
     && rm -rf /test/php-${PHP_VERSION}
 
 
 # 复制相关配置
-COPY php/php.ini  /usr/local/php/etc/
-COPY php/php-fpm.conf  /usr/local/php/etc/
+COPY ./php/php.ini  /usr/local/php/etc/
+COPY ./php/php-fpm.conf  /usr/local/php/etc/
 # 软连接处理
 RUN ln -s /usr/local/php/bin/php /usr/local/bin/php
 
@@ -127,7 +125,7 @@ RUN tar -zxvf /test/redis-${REDIS_VERSION}.tar.gz -C /test \
 
 # 复制设置redis.conf 配置
 RUN mkdir -p /etc/redis/
-COPY redis/redis.conf  /etc/redis/
+COPY ./redis/redis.conf  /etc/redis/
 
 
 # 安装 wkhtmltopdf  wkhtmltox_0.12.5-1.trusty_amd64.deb
@@ -174,17 +172,19 @@ RUN unzip /test/${PHP_EXTENSION_WKHTMLTOPDF}.zip -d /test  \
     && cd /  \
     && rm -rf /test/${PHP_EXTENSION_WKHTMLTOPDF}
 
-# 守护进程  安装supervisor ,
+# 守护进程  安装supervisor
 RUN  apt-get install -y supervisor
 
 #复制相关配置文件
-COPY supervisor/php-fpm_supervisor.conf /etc/supervisor/conf.d/
-COPY supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
-COPY supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
+COPY ./supervisor/php-fpm_supervisor.conf /etc/supervisor/conf.d/
+COPY ./supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
+COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 
 # 安装composer
-RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer \
+RUN wget https://getcomposer.org/composer.phar \
+    && mv composer.phar composer \
+    && chmod +x composer \
+    && mv composer /usr/local/bin \
     && composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
 
@@ -192,12 +192,14 @@ RUN curl -sS https://getcomposer.org/installer | php \
 #RUN apt-get -y autoremove libxfont1 xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi fontconfig libxcb1 libxrender1 libxext6 autoconf unzip
 #RUN apt-get -y autoremove libtool-bin bison  zlib1g-dev libpcre3 libpcre3-dev libssl-dev libxslt1-dev  libgeoip-dev libgoogle-perftools-dev libperl-dev libtool gcc
 #RUN apt-get -y autoremove pkg-config libmcrypt-dev libxml2-dev build-essential openssl  libssl-dev make curl libcurl4-gnutls-dev libjpeg-dev  libpng-dev
-RUN apt-get -y autoremove unzip
+RUN apt-get -y autoremove unzip wget
 
 # 修复环境依赖
 #RUN apt-get update
 #RUN apt-get -f install
 #RUN apt-get upgrade -y
+
+
 
 # 添加用户，分组
 RUN useradd nginx
@@ -205,10 +207,10 @@ RUN useradd nginx
 # 创建php执行路径文件夹
 RUN mkdir -p /www/wwwroot/html/
 #复制基本文件
-COPY php/index.php  /www/wwwroot/html/
+COPY ./php/index.php  /www/wwwroot/html/
 
 WORKDIR /www/wwwroot/
-COPY entrypoint.sh /www/wwwroot/
+COPY ./entrypoint.sh /www/wwwroot/
 RUN chmod +x /www/wwwroot/entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
