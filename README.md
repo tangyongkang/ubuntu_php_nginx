@@ -18,7 +18,7 @@
 
 安装一些必要的系统工具：
 
-    sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+    sudo yum install -y yum-utils device-mapper-persistent-data lvm2  dos2unix
 
 
 添加软件源信息：
@@ -60,6 +60,30 @@ php 源码版本下载地址
 镜像加速  
      
       systemctl restart docker
+      
+      
+安装mysql
+
+      docker pull mysql:5.7
+      docker run -d -p 3306:3306 --name mysql -v /docker/mysql/logs:/logs -v /docker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+      docker exec -it mysql bash
+      mysql -uroot -p123456
+      
+让root用户可以远程登陆
+      
+      GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+      
+创建一个rcuser用户，给rcuser用户赋权，拥有所有权限，创建一个数据库实例rising,刷新生效
+      
+      CREATE USER 'rcuser'@'%' IDENTIFIED BY 'rcuser123';   
+      GRANT ALL ON *.* TO 'rcuser'@'%';
+      CREATE DATABASE rising;
+      
+修改字符集，插入中文不报错
+      
+      ALTER DATABASE rising DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;        
+      flush privileges;
+      
 
 ##主要特性
 

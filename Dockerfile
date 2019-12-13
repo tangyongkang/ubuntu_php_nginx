@@ -40,6 +40,7 @@ COPY ./wkhtmltopdf/${PHP_WKHTMLTOPDF}.deb /test
 
 COPY ./extension/redis-${PHP_EXTENSION_REDIS}.tgz /test/
 COPY ./extension/${PHP_EXTENSION_WKHTMLTOPDF}.zip /test/
+COPY ./extension/${PHP_EXTENSION_XLS_WRITER}.zip /test/
 
 
 #安装nginx
@@ -178,7 +179,10 @@ RUN wget https://getcomposer.org/composer.phar \
     && chmod +x composer \
     && mv composer /usr/local/bin \
     && composer config -g repo.packagist composer https://packagist.phpcomposer.com
-#
+
+# 安装 crontab
+RUN apt-get install -y cron
+
 #
 ## 卸载不必要的环境依赖
 ##RUN apt-get -y autoremove libxfont1 xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi fontconfig libxcb1 libxrender1 libxext6 autoconf unzip

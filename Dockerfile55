@@ -179,6 +179,9 @@ COPY ./supervisor/php-fpm_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/nginx_supervisor.conf /etc/supervisor/conf.d/
 COPY ./supervisor/redis_supervisor.conf /etc/supervisor/conf.d/
 
+# 安装 crontab
+RUN apt-get install -y cron
+
 # 卸载不必要的环境依赖
 #RUN apt-get -y autoremove libxfont1 xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi fontconfig libxcb1 libxrender1 libxext6 autoconf unzip
 #RUN apt-get -y autoremove libtool-bin bison  zlib1g-dev libpcre3 libpcre3-dev libssl-dev libxslt1-dev  libgeoip-dev libgoogle-perftools-dev libperl-dev libtool gcc
