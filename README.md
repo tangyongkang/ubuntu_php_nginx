@@ -65,7 +65,7 @@ php 源码版本下载地址
 安装mysql
 
       docker pull mysql:5.7
-      docker run -d -p 3306:3306 --name mysql -v /docker/mysql/logs:/logs -v /docker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+      docker run -d -p 3306:3306 --name mysql -v /docker/mysql/logs:/logs -v /docker/mysql/data:/var/lib/mysql -v /etc/mysql/mysql.conf.d/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf  -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
       docker exec -it mysql bash
       mysql -uroot -p123456
       
